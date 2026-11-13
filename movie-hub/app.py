@@ -46,14 +46,22 @@ def load_showtimes(target_date: date, region: str):
 
 @st.cache_data(ttl=3600, show_spinner="박스오피스를 불러오는 중...")
 def load_box_office(target_date: date):
-    return kobis.fetch_daily_box_office(target_date)
+    # 불러온 시각도 함께 저장 (화면에 '언제 받아온 정보인지' 표시하기 위해)
+    return kobis.fetch_daily_box_office(target_date), datetime.now()
+
+
+WEEKDAYS = "월화수목금토일"
 
 
 # ---------------- 박스오피스 ----------------
 yesterday = date.today() - timedelta(days=1)
-st.subheader(f"📊 박스오피스 TOP 10 ({yesterday:%m/%d} 기준)")
+st.subheader("📊 박스오피스 TOP 10")
 try:
-    box_office = load_box_office(yesterday)
+    box_office, fetched_at = load_box_office(yesterday)
+    st.caption(
+        f"🗓️ 집계 기준: {yesterday:%Y-%m-%d}({WEEKDAYS[yesterday.weekday()]}) 하루 전체 (00:00 ~ 24:00)"
+        f" · 🔄 불러온 시각: {fetched_at:%m/%d %H:%M} · 출처: 영화진흥위원회 KOBIS"
+    )
     st.dataframe(
         pd.DataFrame(
             {
