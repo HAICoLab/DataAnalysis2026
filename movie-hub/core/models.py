@@ -29,6 +29,8 @@ class Showtime:
     seats_left: int       # 남은 좌석
     total_seats: int      # 전체 좌석
     booking_url: str      # 예매 페이지 주소
+    screen_name: str = "" # 상영관 이름: 3관, MX4D관 ...
+    bookable: bool = True # 영화관이 '예매 가능'으로 표시했는지 (상영 직전 마감 등은 False)
 
 
 @dataclass(frozen=True)
